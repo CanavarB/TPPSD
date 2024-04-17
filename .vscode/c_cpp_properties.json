@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "TPPSD",
+            "compileCommands": "build/compile_commands.json",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ]
+        }
+    ],
+    "version": 4
+}

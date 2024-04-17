@@ -1,0 +1,4 @@
+. ~/.bashrc
+get_idf
+cd .
+clear
