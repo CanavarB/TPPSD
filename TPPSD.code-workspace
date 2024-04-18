@@ -125,7 +125,12 @@
             "i80_st7789_panel.h": "c",
             "esp_lcd_panel_io.h": "c",
             "gpio.h": "c",
-            "esp_lcd_panel_vendor.h": "c"
+            "esp_lcd_panel_vendor.h": "c",
+            "usb_msc.h": "c",
+            "tusb.h": "c",
+            "tusb_option.h": "c",
+            "tusb_private.h": "c",
+            "usb_phy.h": "c"
         }
     }
 }

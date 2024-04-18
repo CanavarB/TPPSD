@@ -1,22 +1,31 @@
+set(srcs 
+    "main.c"
+    )
+
+set(tasks
+    
+)
+
+set(screens
+    "screens/register.c"
+    "screens/main_menu.c"
+    "screens/insert_passwords.c"
+    "screens/show_passwords.c"
+)
+
+set (images 
+    "images/usb.c"
+    )
+
+list(APPEND srcs ${images} ${tasks} ${screens})
+
 set(requires
-    fatfs
-    wear_levelling
-    esp_lcd
     rotary_encoder
     aes_256_cbc
     salt_table
     i80_st7789_panel
     enc_storage
-    )
-
-set(srcs 
-    "main.c"
-    "usb_msc/usb_msc.c"
-    "screens/register.c"
-    "screens/main_menu.c"
-    "screens/insert_passwords.c"
-    "screens/show_passwords.c"
-    "images/usb.c"
+    usb_msc
     )
 
 set(includes

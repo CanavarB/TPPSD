@@ -6,6 +6,7 @@
 #include "product_config.h"
 #include "rotary_encoder.h"
 #include "salt_table.h"
+#include "usb_msc.h"
 
 static const char* TAG = "MAIN";
 
@@ -26,5 +27,6 @@ void app_main(void) {
         BOARD_TFT_CS, BOARD_TFT_RST, BOARD_TFT_DC, BOARD_TFT_WR, BOARD_TFT_RD, BOARD_TFT_DATA0,
         BOARD_TFT_DATA1, BOARD_TFT_DATA2, BOARD_TFT_DATA3, BOARD_TFT_DATA4, BOARD_TFT_DATA5,
         BOARD_TFT_DATA6, BOARD_TFT_DATA7, BOARD_TFT_BL, DISPLAY_BUFFER_SIZE * sizeof(uint16_t),
-        LCD_PIXEL_CLOCK_HZ, display_notify_lvgl_flush_ready); */
+        LCD_PIXEL_CLOCK_HZ, display_notify_lvgl_flush_ready);
+    usb_msc_handle_t usb_msc = usb_msc_init(USB_MSC_LABEL, USB_MSC_MOUNT_PATH);*/
 }
