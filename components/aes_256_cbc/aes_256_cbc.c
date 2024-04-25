@@ -1,4 +1,7 @@
 #include "aes_256_cbc.h"
+#include "esp_log.h"
+#include "mbedtls/aes.h"
+#include <string.h>
 
 static const char* TAG = "AES_256_CBC";
 

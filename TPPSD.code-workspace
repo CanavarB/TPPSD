@@ -130,7 +130,28 @@
             "tusb.h": "c",
             "tusb_option.h": "c",
             "tusb_private.h": "c",
-            "usb_phy.h": "c"
+            "usb_phy.h": "c",
+            "lvgl_task.h": "c",
+            "enc_storage.h": "c",
+            "rotary_encoder.h": "c",
+            "main.h": "c",
+            "esp_check.h": "c",
+            "esp_log.h": "c",
+            "esp_spiffs.h": "c",
+            "sdkconfig.h": "c",
+            "lvgl.h": "c",
+            "insert_passwords.h": "c",
+            "esp_lcd_panel_ops.h": "c",
+            "esp_err.h": "c",
+            "settings_screen.h": "c",
+            "main_menu_screen.h": "c",
+            "show_passwords_screen.h": "c",
+            "salt_table.h": "c",
+            "insert_passwords_screen.h": "c",
+            "tppsd_nvs.h": "c",
+            "nvs.h": "c",
+            "register_screen.h": "c",
+            "bootloader_random.h": "c"
         }
     }
 }

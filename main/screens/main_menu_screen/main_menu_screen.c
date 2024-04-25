@@ -1,9 +1,9 @@
-#include "esp_check.h"
-#include "esp_log.h"
-#include "lvgl.h"
-#include "screens/insert_passwords.h"
-#include "screens/register.h"
-#include "screens/show_passwords.h"
+#include "main_menu_screen.h"
+
+// SCREENS
+#include "insert_passwords_screen.h"
+#include "register_screen.h"
+#include "show_passwords_screen.h"
 // #include "tasks/fetch_passwords_task.h"
 
 static const char* TAG = "MAIN_SCREEN";
@@ -71,16 +71,11 @@ void main_menu_screen_init() {
     lv_label_set_text(register_label, "Register Screen");
     lv_obj_center(register_label);
 
-    lv_obj_add_event_cb(insert_passwords_btn, insert_passwords_btn_event_cb,
-                        LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(show_passwords_btn, show_passwords_btn_event_cb,
-                        LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(settings_btn, settings_btn_event_cb, LV_EVENT_CLICKED,
-                        NULL);
-    lv_obj_add_event_cb(read_csv_btn, read_csv_btn_event_cb, LV_EVENT_CLICKED,
-                        NULL);
-    lv_obj_add_event_cb(register_btn, register_btn_event_cb, LV_EVENT_ALL,
-                        NULL);
+    lv_obj_add_event_cb(insert_passwords_btn, insert_passwords_btn_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(show_passwords_btn, show_passwords_btn_event_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(settings_btn, settings_btn_event_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(read_csv_btn, read_csv_btn_event_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(register_btn, register_btn_event_cb, LV_EVENT_ALL, NULL);
 
     lv_group_add_obj(main_menu_input_group, insert_passwords_btn);
     lv_group_add_obj(main_menu_input_group, show_passwords_btn);

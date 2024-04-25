@@ -1,4 +1,4 @@
-set(requires spiffs)
-idf_component_register(SRCS "enc_storage.c"
+set(requires main nvs_flash)
+idf_component_register(SRCS "TPPSD_nvs.c"
                     INCLUDE_DIRS "include"
                     REQUIRES "${requires}")

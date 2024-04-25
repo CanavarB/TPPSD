@@ -1,6 +1,4 @@
 #pragma once
-#include "esp_check.h"
-#include "esp_log.h"
 #include "iot_button.h"
 #include "iot_knob.h"
 
@@ -15,8 +13,7 @@ typedef struct {
     knob_handle_t knob_handle;
 } rotary_encoder_handle_t;
 
-rotary_encoder_handle_t rotary_encoder_init(gpio_num_t encoder_pin_a,
-                                            gpio_num_t encoder_pin_b,
+rotary_encoder_handle_t rotary_encoder_init(gpio_num_t encoder_pin_a, gpio_num_t encoder_pin_b,
                                             gpio_num_t button_pin);
 void rotary_encoder_get_event(rotary_encoder_handle_t* rotary_encoder_handle,
                               rotary_encoder_event_t* event);

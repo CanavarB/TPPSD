@@ -1,43 +1,32 @@
-/**
- * @file      product_pins.h
- * @author    Lewis He (lewishe@outlook.com)
- * @license   MIT
- * @copyright Copyright (c) 2024  Shenzhen Xinyuan Electronic Technology Co.,
- * Ltd
- * @date      2024-01-07
- *
- */
-
 #pragma once
-
 #include <sdkconfig.h>
 
+// USB MASS STORAGE CLASS
+#define USB_MSC_LABEL "msc"
+#define USB_MSC_MOUNT_PATH "/msc"
+#define USB_MSC_PASSWD_FILE_NAME "/passwords.csv"
+#define USB_MSC_PASSWD_FILE_PATH USB_MSC_MOUNT_PATH USB_MSC_PASSWD_FILE_NAME
+
+// SALT TABLE
+#define SALT_TABLE_LABEL "salt_table"
+
+// SPIFFS ENCRYPTED STORAGE
+#define SPIFFS_LABEL "storage"
+#define SPIFFS_BASE_PATH "/spiffs"
+
+// NON VOLATILE STORAGE
+#define NVS_NAMESPACE "TPPSD"
+#define NVS_KEY_DEVICE_PASSWORD "DEV_PASSWD"
+#define NVS_KEY_SETTINGS_LAST_BRIGHNESS "STN_BRIG"
+
+// ROTARY ENCODER PINS
 #define ROT_ENC_A_GPIO (gpio_num_t)(21)
 #define ROT_ENC_B_GPIO (gpio_num_t)(17)
 #define ROT_ENC_BUTTON_GPIO (gpio_num_t)(16)
 
-#define USB_MSC_LABEL "msc"
-#define USB_MSC_MOUNT_PATH "/msc"
-#define PASSWD_FILE_NAME "/passwords.csv"
-#define PASSWD_FILE_PATH USB_MSC_MOUNT_PATH PASSWD_FILE_NAME
-
-#define STORAGE_LABEL "storage"
-#define STORAGE_MOUNT_PATH "/spiffs"
-
-#define SALT_TABLE_LABEL "salt_table"
-#define SALT_TABLE_SIZE (1 * 1024 * 1024)
-#define SALT_SIZE (32)
-#define SALT_NUM (SALT_TABLE_SIZE / SALT_SIZE)
-
-#define NVS_DEVICE_PASSWORD_KEY "device_passwd"
-#define NVS_IS_REGISTERED_KEY "is_registered"
-
+// BOARD PINS
 #define BOARD_NONE_PIN (-1)
-
 #define BOARD_POWERON (gpio_num_t)(15)
-
-#define LCD_PIXEL_CLOCK_HZ (10 * 1000 * 1000)
-
 #define BOARD_TFT_BL (gpio_num_t)(38)
 #define BOARD_TFT_DATA0 (gpio_num_t)(39)
 #define BOARD_TFT_DATA1 (gpio_num_t)(40)
@@ -55,7 +44,8 @@
 #define BOARD_I2C_SCL (gpio_num_t)(17)
 #define BOARD_I2C_SDA (gpio_num_t)(18)
 
+// DISPLAY
+#define LCD_PIXEL_CLOCK_HZ (10 * 1000 * 1000)
 #define AMOLED_WIDTH (170)
 #define AMOLED_HEIGHT (320)
-
 #define DISPLAY_BUFFER_SIZE (AMOLED_WIDTH * AMOLED_HEIGHT)

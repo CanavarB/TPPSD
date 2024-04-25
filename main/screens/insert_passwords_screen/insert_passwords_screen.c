@@ -1,18 +1,11 @@
-#include "esp_check.h"
-#include "esp_log.h"
-#include "lvgl.h"
-#include "screens/main_menu.h"
-// #include "tasks/fetch_passwords_task.h"
-// #include "usb_msc/usb_msc.h"
+#include "insert_passwords_screen.h"
 
 static const char* TAG = "INSERT_PASSWORDS_SCREEN";
 
-extern lv_indev_t* rotary_indev;
-
-lv_obj_t* usb_symbol;
 LV_IMG_DECLARE(usb);
-lv_group_t* insert_passwords_input_group;
+
 lv_obj_t* insert_passwords_scr;
+lv_group_t* insert_passwords_input_group;
 
 static void cancel_btn_event_cb(lv_event_t* e);
 
@@ -20,8 +13,7 @@ void insert_passwords_screen_init() {
     insert_passwords_scr = lv_obj_create(NULL);
     insert_passwords_input_group = lv_group_create();
 
-    usb_symbol = lv_img_create(insert_passwords_scr);
-
+    lv_obj_t* usb_symbol = lv_img_create(insert_passwords_scr);
     lv_img_set_src(usb_symbol, &usb);
     lv_obj_align(usb_symbol, LV_ALIGN_TOP_MID, 0, 50);
 
@@ -37,14 +29,13 @@ void insert_passwords_screen_init() {
 }
 
 void insert_passwords_screen_load() {
+
     lv_indev_set_group(rotary_indev, insert_passwords_input_group);
-    // usb_msc_start();
     lv_scr_load(insert_passwords_scr);
 }
 
 static void cancel_btn_event_cb(lv_event_t* e) {
     ESP_LOGI(TAG, "CANCEL PRESSED");
-    // usb_msc_stop();
     //  start_fetch_passwords_task();
-    main_menu_screen_load();
+    // main_menu_screen_load();
 }

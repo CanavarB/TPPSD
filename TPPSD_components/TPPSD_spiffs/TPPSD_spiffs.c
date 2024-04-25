@@ -1,13 +1,16 @@
-#include "enc_storage.h"
+#include "TPPSD_spiffs.h"
+#include "esp_log.h"
+#include "esp_spiffs.h"
+#include "product_config.h"
 
-static const char* TAG = "ENC_STORAGE";
+static const char* TAG = "SPIFFS";
 
-esp_err_t enc_storage_init(const char* base_path, const char* label) {
-    ESP_LOGI(TAG, "============ENC STORAGE============");
+esp_err_t spiffs_init() {
+    ESP_LOGI(TAG, "============SPIFFS============");
 
     esp_vfs_spiffs_conf_t spiffs_conf;
-    spiffs_conf.base_path = base_path;
-    spiffs_conf.partition_label = label;
+    spiffs_conf.base_path = SPIFFS_BASE_PATH;
+    spiffs_conf.partition_label = SPIFFS_LABEL;
     spiffs_conf.max_files = 5;
     spiffs_conf.format_if_mount_failed = true;
 

@@ -1,10 +1,6 @@
 #pragma once
-#include "driver/gpio.h"
-#include "esp_check.h"
-#include "esp_log.h"
-#include "esp_partition.h"
+#include "esp_err.h"
 #include "tinyusb.h"
-#include "tusb_msc_storage.h"
 
 typedef tinyusb_config_t usb_msc_handle_t;
 

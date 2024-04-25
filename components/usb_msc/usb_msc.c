@@ -1,5 +1,10 @@
 #include "usb_msc.h"
+#include "driver/gpio.h"
+#include "esp_check.h"
+#include "esp_log.h"
+#include "esp_partition.h"
 #include "esp_private/usb_phy.h"
+#include "tusb_msc_storage.h"
 
 static const char* TAG = "USB_MSC";
 

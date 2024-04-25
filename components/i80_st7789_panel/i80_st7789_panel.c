@@ -1,4 +1,7 @@
 #include "i80_st7789_panel.h"
+#include "freertos/FreeRTOS.h"
+
+#define MAX_BRIGHTNESS_DUTY_CYCLE (1 << SOC_LEDC_TIMER_BIT_WIDTH) - 10
 
 static const char* TAG = "DISPLAY_PANEL";
 
@@ -29,7 +32,7 @@ static const lcd_cmd_t lcd_st7789v_commands[] = {
      14},
 };
 
-esp_lcd_panel_handle_t i80_st7789_panel_init(
+i80_st7789_panel_handle_t i80_st7789_panel_init(
     const gpio_num_t I80_CS_PIN, const gpio_num_t I80_RST_PIN, const gpio_num_t I80_DC_PIN,
     const gpio_num_t I80_WR_PIN, const gpio_num_t I80_RD_PIN, const gpio_num_t I80_DATA0_PIN,
     const gpio_num_t I80_DATA1_PIN, const gpio_num_t I80_DATA2_PIN, const gpio_num_t I80_DATA3_PIN,
@@ -40,8 +43,9 @@ esp_lcd_panel_handle_t i80_st7789_panel_init(
     ESP_LOGI(TAG, "============I80 ST7889 PANEL============");
 
     ESP_ERROR_CHECK(gpio_set_direction(I80_RD_PIN, GPIO_MODE_OUTPUT));
-    ESP_ERROR_CHECK(gpio_set_direction(BACK_LIGHT_PIN, GPIO_MODE_OUTPUT));
     ESP_ERROR_CHECK(gpio_set_level(I80_RD_PIN, true));
+
+    i80_st7789_panel_handle_t panel_handle;
 
     esp_lcd_i80_bus_config_t bus_config = {.dc_gpio_num = I80_DC_PIN,
                                            .wr_gpio_num = I80_WR_PIN,
@@ -61,14 +65,14 @@ esp_lcd_panel_handle_t i80_st7789_panel_init(
                                            .max_transfer_bytes = buffer_size,
                                            .psram_trans_align = 64,
                                            .sram_trans_align = 4};
-    esp_lcd_i80_bus_handle_t i80_bus;
-    ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &i80_bus));
+    ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &panel_handle.bus_handle));
 
     esp_lcd_panel_io_i80_config_t io_config = {
         .cs_gpio_num = I80_CS_PIN,
         .pclk_hz = panel_clock_hz,
         .trans_queue_depth = 10,
         .on_color_trans_done = color_trans_done_cb,
+        .user_ctx = NULL,
         .lcd_cmd_bits = 8,
         .lcd_param_bits = 8,
         .dc_levels =
@@ -79,8 +83,8 @@ esp_lcd_panel_handle_t i80_st7789_panel_init(
                 .dc_data_level = 1,
             },
     };
-    esp_lcd_panel_io_handle_t io_handle;
-    ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(i80_bus, &io_config, &io_handle));
+    ESP_ERROR_CHECK(
+        esp_lcd_new_panel_io_i80(panel_handle.bus_handle, &io_config, &panel_handle.io_handle));
 
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = I80_RST_PIN,
@@ -89,20 +93,86 @@ esp_lcd_panel_handle_t i80_st7789_panel_init(
         .vendor_config = NULL,
     };
 
-    esp_lcd_panel_handle_t panel_handle;
-    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle));
+    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_handle.io_handle, &panel_config,
+                                             &panel_handle.esp_lcd_panel_handle));
 
-    esp_lcd_panel_reset(panel_handle);
-    esp_lcd_panel_init(panel_handle);
+    esp_lcd_panel_reset(panel_handle.esp_lcd_panel_handle);
+    esp_lcd_panel_init(panel_handle.esp_lcd_panel_handle);
+
+    /*
+    // esp_lcd_panel_swap_xy(panel_handle, true);
+    esp_lcd_panel_mirror(panel_handle, true, true);
+    esp_lcd_panel_set_gap(panel_handle, 35, 0); */
 
     for (uint8_t i = 0; i < (sizeof(lcd_st7789v_commands) / sizeof(lcd_cmd_t)); i++) {
-        esp_lcd_panel_io_tx_param(io_handle, lcd_st7789v_commands[i].addr,
+        esp_lcd_panel_io_tx_param(panel_handle.io_handle, lcd_st7789v_commands[i].addr,
                                   lcd_st7789v_commands[i].param,
                                   lcd_st7789v_commands[i].len & 0x7f);
         if (lcd_st7789v_commands[i].len & 0x80)
             vTaskDelay(pdMS_TO_TICKS(120));
     }
+
+    esp_lcd_panel_disp_on_off(panel_handle.esp_lcd_panel_handle, true);
+
+    ledc_timer_config_t ledc_timer = {.speed_mode = LEDC_LOW_SPEED_MODE,
+                                      .duty_resolution = SOC_LEDC_TIMER_BIT_WIDTH,
+                                      .timer_num = LEDC_TIMER_0,
+                                      .freq_hz = 4000,
+                                      .clk_cfg = LEDC_AUTO_CLK};
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+    ledc_channel_config_t ledc_channel = {.speed_mode = LEDC_LOW_SPEED_MODE,
+                                          .channel = LEDC_CHANNEL_0,
+                                          .timer_sel = LEDC_TIMER_0,
+                                          .intr_type = LEDC_INTR_DISABLE,
+                                          .gpio_num = BACK_LIGHT_PIN,
+                                          .duty = 0, // Set duty to 0%
+                                          .hpoint = 0};
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+    panel_handle.back_light_channel = ledc_channel.channel;
+
     return panel_handle;
 };
 
-// esp_err_t set_back_light() {}
+esp_err_t i80_st7789_panel_set_brightness(i80_st7789_panel_handle_t* panel_handle,
+                                          PANEL_BRIGHTNESS_T panel_brightness) {
+
+    uint32_t brightness;
+    switch (panel_brightness) {
+    case PANEL_BRIGHTNESS_MIN:
+        brightness = 1 << 5;
+        break;
+    case PANEL_BRIGHTNESS_2:
+        brightness = 1 << 8;
+        break;
+    case PANEL_BRIGHTNESS_3:
+        brightness = 1 << 10;
+        break;
+    case PANEL_BRIGHTNESS_4:
+        brightness = 1 << 12;
+        break;
+    default:
+        brightness = MAX_BRIGHTNESS_DUTY_CYCLE;
+        break;
+    }
+    ESP_LOGI(TAG, "Brightness set: %" PRId8, panel_brightness);
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, panel_handle->back_light_channel, brightness);
+    return ledc_update_duty(LEDC_LOW_SPEED_MODE, panel_handle->back_light_channel);
+}
+
+esp_err_t i80_st7789_panel_invert_color(i80_st7789_panel_handle_t* panel_handle,
+                                        bool invert_color_data) {
+    return esp_lcd_panel_invert_color(panel_handle->esp_lcd_panel_handle, invert_color_data);
+}
+
+esp_err_t i80_st7789_panel_swap_xy(i80_st7789_panel_handle_t* panel_handle, bool swap_axes) {
+    return esp_lcd_panel_swap_xy(panel_handle->esp_lcd_panel_handle, swap_axes);
+}
+
+esp_err_t i80_st7789_panel_mirror(i80_st7789_panel_handle_t* panel_handle, bool mirror_x,
+                                  bool mirror_y) {
+    return esp_lcd_panel_mirror(panel_handle->esp_lcd_panel_handle, mirror_x, mirror_y);
+}
+
+esp_err_t i80_st7789_panel_set_gap(i80_st7789_panel_handle_t* panel_handle, int x_gap, int y_gap) {
+    return esp_lcd_panel_set_gap(panel_handle->esp_lcd_panel_handle, x_gap, y_gap);
+}

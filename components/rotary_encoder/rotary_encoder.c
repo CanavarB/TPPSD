@@ -1,4 +1,6 @@
 #include "rotary_encoder.h"
+#include "esp_check.h"
+#include "esp_log.h"
 
 static const char* TAG = "ROTARY_ENCODER";
 
