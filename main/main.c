@@ -7,6 +7,7 @@ i80_st7789_panel_handle_t panel;
 rotary_encoder_handle_t rotary_encoder;
 salt_table_handle_t salt_table;
 usb_msc_handle_t usb_msc;
+usb_keyboard_handle_t usb_keyboard;
 
 bool display_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io,
                                      esp_lcd_panel_io_event_data_t* edata, void* user_ctx) {
@@ -41,6 +42,7 @@ void app_main(void) {
     // TODO: set CB symbol
 
     usb_msc = usb_msc_init(USB_MSC_LABEL, USB_MSC_MOUNT_PATH);
+    usb_keyboard = usb_keyboard_init();
     salt_table = salt_table_init(SALT_TABLE_LABEL);
 
     start_lvgl_task();

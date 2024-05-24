@@ -36,6 +36,7 @@ void insert_passwords_screen_load() {
 
 static void cancel_btn_event_cb(lv_event_t* e) {
     ESP_LOGI(TAG, "CANCEL PRESSED");
-    //  start_fetch_passwords_task();
-    // main_menu_screen_load();
+
+    //   start_fetch_passwords_task();
+    //  main_menu_screen_load();
 }

@@ -4,7 +4,8 @@
             "name": "TPPSD",
             "compileCommands": "build/compile_commands.json",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/main/tasks/usb_keyboard_task"
             ]
         }
     ],
