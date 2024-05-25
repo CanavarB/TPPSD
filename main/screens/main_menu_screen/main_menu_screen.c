@@ -3,8 +3,8 @@
 // SCREENS
 #include "insert_passwords_screen.h"
 #include "register_screen.h"
+#include "settings_screen.h"
 #include "show_passwords_screen.h"
-// #include "tasks/fetch_passwords_task.h"
 
 static const char* TAG = "MAIN_SCREEN";
 
@@ -106,8 +106,9 @@ static void show_passwords_btn_event_cb(lv_event_t* e) {
     ESP_LOGI(TAG, "SHOW_PASS");
     show_passwords_screen_load();
 }
-static void settings_btn_event_cb(lv_event_t* e) { ESP_LOGI(TAG, "SETTINGS"); }
-
-static void generate_btn_event_cb(lv_event_t* e) {
-    // start_fetch_passwords_task();
+static void settings_btn_event_cb(lv_event_t* e) {
+    ESP_LOGI(TAG, "SETTINGS");
+    settings_screen_load();
 }
+
+static void generate_btn_event_cb(lv_event_t* e) {}

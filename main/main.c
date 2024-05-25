@@ -47,7 +47,7 @@ void app_main(void) {
     salt_table = salt_table_init(SALT_TABLE_LABEL);
 
     ESP_LOGI(TAG, "Reading passwords.csv");
+    i80_st7789_panel_set_brightness(&panel, PANEL_BRIGHTNESS_MAX);
 
-    // start_fetch_passwords_task();
     start_lvgl_task();
 }

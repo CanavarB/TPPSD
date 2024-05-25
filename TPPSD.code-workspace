@@ -154,7 +154,8 @@
             "bootloader_random.h": "c",
             "usb_keyboard.h": "c",
             "descriptors_control.h": "c",
-            "usb_keyboard_task.h": "c"
+            "usb_keyboard_task.h": "c",
+            "sha256.h": "c"
         }
     }
 }

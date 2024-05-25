@@ -32,6 +32,7 @@ set(requires
     usb_keyboard
     TPPSD_nvs
     TPPSD_spiffs
+    mbedtls
     )
 
 idf_component_register(
