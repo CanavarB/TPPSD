@@ -69,7 +69,6 @@ void start_lvgl_task() {
     disp_drv.ver_res = AMOLED_WIDTH;
     disp_drv.flush_cb = lvgl_flush_cb;
     disp_drv.draw_buf = &disp_buf;
-
     disp_drv.rotated = LV_DISP_ROT_90;
     lv_disp_drv_register(&disp_drv);
 
@@ -102,10 +101,10 @@ void start_lvgl_task() {
         show_passwords_screen_init();
         settings_screen_init();
 
+        register_screen_load();
         // register_screen_init();
-        main_menu_screen_load();
+        // main_menu_screen_load();
         /*settings_screen_load();
-         register_screen_load();
         main_menu_screen_load();
         insert_passwords_screen_load();
         show_passwords_screen_load(); */

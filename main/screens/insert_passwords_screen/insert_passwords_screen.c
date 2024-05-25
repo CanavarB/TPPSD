@@ -1,4 +1,6 @@
 #include "insert_passwords_screen.h"
+#include "fetch_passwords_task.h"
+#include "main_menu_screen.h"
 
 static const char* TAG = "INSERT_PASSWORDS_SCREEN";
 
@@ -15,6 +17,8 @@ void insert_passwords_screen_init() {
 
     lv_obj_t* usb_symbol = lv_img_create(insert_passwords_scr);
     lv_img_set_src(usb_symbol, &usb);
+    lv_obj_remove_style_all(usb_symbol);
+    lv_obj_set_size(usb_symbol, 150, 150);
     lv_obj_align(usb_symbol, LV_ALIGN_TOP_MID, 0, 50);
 
     lv_obj_t* cancel_btn = lv_btn_create(insert_passwords_scr);
@@ -32,11 +36,12 @@ void insert_passwords_screen_load() {
 
     lv_indev_set_group(rotary_indev, insert_passwords_input_group);
     lv_scr_load(insert_passwords_scr);
+    usb_msc_start(&usb_msc);
 }
 
 static void cancel_btn_event_cb(lv_event_t* e) {
     ESP_LOGI(TAG, "CANCEL PRESSED");
-
-    //   start_fetch_passwords_task();
-    //  main_menu_screen_load();
+    usb_msc_stop(&usb_msc);
+    start_fetch_passwords_task();
+    main_menu_screen_load();
 }

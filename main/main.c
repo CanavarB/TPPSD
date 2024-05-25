@@ -1,4 +1,5 @@
 #include "main.h"
+#include "fetch_passwords_task.h"
 #include "lvgl_task.h"
 
 static const char* TAG = "MAIN";
@@ -45,5 +46,8 @@ void app_main(void) {
     usb_keyboard = usb_keyboard_init();
     salt_table = salt_table_init(SALT_TABLE_LABEL);
 
+    ESP_LOGI(TAG, "Reading passwords.csv");
+
+    // start_fetch_passwords_task();
     start_lvgl_task();
 }

@@ -51,6 +51,5 @@ static void roller_event_handler(lv_event_t* e) {
         ESP_LOGE(TAG, "XXXXXXXXXXXXX");
         char buf[32];
         lv_roller_get_selected_str(obj, buf, sizeof(buf));
-        LV_LOG_USER("Selected month: %s\n", buf);
     }
 }
