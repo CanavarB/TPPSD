@@ -2,6 +2,7 @@
 #include "TPPSD_nvs.h"
 #include "esp_log.h"
 #include "lvgl.h"
+#include "main_menu_screen.h"
 
 static const char* TAG = "SETTINGS_SCREEN";
 
@@ -12,7 +13,7 @@ lv_group_t* settings_input_group;
 
 lv_obj_t* label1;
 
-static void sub1_event_cb(lv_event_t* e);
+static void slider_event(lv_event_t* e);
 
 void settings_screen_init() {
     settings_scr = lv_obj_create(NULL);
@@ -26,7 +27,7 @@ void settings_screen_init() {
     lv_obj_t* cont;
     lv_obj_t* label;
 
-    lv_obj_t* sub_1_page = lv_menu_page_create(menu, "Page 1");
+    lv_obj_t* sub_1_page = lv_menu_page_create(menu, "Display");
 
     lv_obj_t* main_page = lv_menu_page_create(menu, NULL);
     lv_menu_set_page(menu, main_page);
@@ -45,17 +46,17 @@ void settings_screen_init() {
     lv_obj_align_to(label1, slider, LV_ALIGN_OUT_TOP_MID, 0, -15);
     lv_obj_set_flex_grow(slider, 1);
     lv_slider_set_value(slider, (uint32_t)last_brightness, LV_ANIM_OFF);
-    lv_obj_add_event_cb(slider, sub1_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(slider, slider_event, LV_EVENT_ALL, NULL);
 
     cont = lv_menu_cont_create(main_page);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "Item 1 (Click me!)");
+    lv_label_set_text(label, "Display");
     lv_menu_set_load_page_event(menu, cont, sub_1_page);
     lv_group_add_obj(settings_input_group, cont);
 
     cont = lv_menu_cont_create(main_page);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "Item 2 (Click me!)");
+    lv_label_set_text(label, "Security");
     lv_menu_set_load_page_event(menu, cont, sub_1_page);
     lv_group_add_obj(settings_input_group, cont);
     lv_group_add_obj(settings_input_group, slider);
@@ -66,7 +67,7 @@ void settings_screen_load() {
     lv_scr_load(settings_scr);
 }
 
-static void sub1_event_cb(lv_event_t* e) {
+static void slider_event(lv_event_t* e) {
     lv_event_code_t event = lv_event_get_code(e);
     lv_obj_t* slider = lv_event_get_target(e);
     uint32_t slider_value = lv_slider_get_value(slider);
@@ -77,10 +78,10 @@ static void sub1_event_cb(lv_event_t* e) {
         lv_label_set_text_fmt(label1, "%" LV_PRId32, slider_value);
         lv_obj_align_to(label1, slider, LV_ALIGN_OUT_TOP_MID, 0, -15);
         break;
-    case LV_EVENT_LEAVE:
-        ESP_LOGI(TAG, "LEAVED");
+    case LV_EVENT_LONG_PRESSED_REPEAT:
         nvs_set_stn_brig((PANEL_BRIGHTNESS_T*)&slider_value);
         nvs_save();
+        main_menu_screen_load();
         break;
     default:
         break;

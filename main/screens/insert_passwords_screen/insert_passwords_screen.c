@@ -13,6 +13,7 @@ static void cancel_btn_event_cb(lv_event_t* e);
 
 void insert_passwords_screen_init() {
     insert_passwords_scr = lv_obj_create(NULL);
+    lv_obj_set_style_bg_color(insert_passwords_scr, lv_color_make(91, 94, 99), LV_STATE_DEFAULT);
     insert_passwords_input_group = lv_group_create();
 
     lv_obj_t* usb_symbol = lv_img_create(insert_passwords_scr);
@@ -23,6 +24,7 @@ void insert_passwords_screen_init() {
 
     lv_obj_t* cancel_btn = lv_btn_create(insert_passwords_scr);
     lv_obj_align(cancel_btn, LV_ALIGN_BOTTOM_MID, 0, -20);
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_make(241, 73, 2), LV_STATE_FOCUSED);
 
     lv_obj_t* cancel_label = lv_label_create(cancel_btn);
     lv_label_set_text(cancel_label, "Cancel");

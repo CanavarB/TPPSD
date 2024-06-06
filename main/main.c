@@ -39,7 +39,8 @@ void app_main(void) {
 
     PANEL_BRIGHTNESS_T last_brightness;
     nvs_get_stn_brig(&last_brightness);
-    i80_st7789_panel_set_brightness(&panel, last_brightness);
+    i80_st7789_panel_set_brightness(&panel, (PANEL_BRIGHTNESS_T)last_brightness);
+    ESP_LOGI(TAG, "%d", last_brightness);
     // TODO: set CB symbol
 
     usb_msc = usb_msc_init(USB_MSC_LABEL, USB_MSC_MOUNT_PATH);
@@ -47,7 +48,6 @@ void app_main(void) {
     salt_table = salt_table_init(SALT_TABLE_LABEL);
 
     ESP_LOGI(TAG, "Reading passwords.csv");
-    i80_st7789_panel_set_brightness(&panel, PANEL_BRIGHTNESS_MAX);
 
     start_lvgl_task();
 }

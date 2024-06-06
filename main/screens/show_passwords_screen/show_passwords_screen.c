@@ -1,5 +1,6 @@
 #include "show_passwords_screen.h"
 #include "fetch_passwords_task.h"
+#include "main_menu_screen.h"
 #include <dirent.h>
 #include <errno.h>
 
@@ -10,7 +11,8 @@ extern lv_indev_t* rotary_indev;
 lv_group_t* show_passwords_input_group;
 lv_obj_t* show_passwords_scr;
 
-static void change_event_cb(lv_event_t* e);
+static void clicked_event_cb(lv_event_t* e);
+static void pressed_event_cb(lv_event_t* e);
 
 void show_passwords_screen_init() {
     show_passwords_scr = lv_obj_create(NULL);
@@ -44,19 +46,20 @@ void show_passwords_screen_init() {
         }
     }
 
-    lv_obj_add_event_cb(table, change_event_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(table, pressed_event_cb, LV_EVENT_LONG_PRESSED_REPEAT, NULL);
+    lv_obj_add_event_cb(table, clicked_event_cb, LV_EVENT_SHORT_CLICKED, NULL);
 
     lv_group_add_obj(show_passwords_input_group, table);
 }
 void show_passwords_screen_load() {
-    // start_fetch_passwords_task();
+    start_fetch_passwords_task();
     lv_indev_set_group(rotary_indev, show_passwords_input_group);
 
     lv_scr_load(show_passwords_scr);
 }
 
-static void change_event_cb(lv_event_t* e) {
-    ESP_LOGI(TAG, "AAA");
+static void pressed_event_cb(lv_event_t* e) { main_menu_screen_load(); }
+static void clicked_event_cb(lv_event_t* e) {
     lv_obj_t* obj = lv_event_get_target(e);
     uint16_t col;
     uint16_t row;

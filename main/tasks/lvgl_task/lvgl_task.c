@@ -56,12 +56,20 @@ void start_lvgl_task() {
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
 
-    lvgl_draw_buffer =
+    /* lvgl_draw_buffer =
         (uint16_t*)heap_caps_malloc(DISPLAY_BUFFER_SIZE * sizeof(uint16_t), MALLOC_CAP_DMA);
     assert(lvgl_draw_buffer);
 
     // initialize LVGL draw buffers
     lv_disp_draw_buf_init(&disp_buf, lvgl_draw_buffer, NULL, DISPLAY_BUFFER_SIZE);
+     */
+    lv_color_t* buf1 =
+        (lv_color_t*)heap_caps_malloc(AMOLED_HEIGHT * 160 * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    assert(buf1);
+    lv_color_t* buf2 =
+        (lv_color_t*)heap_caps_malloc(AMOLED_HEIGHT * 160 * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    assert(buf2);
+    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, AMOLED_HEIGHT * 160);
 
     ESP_LOGI(TAG, "Register display driver to LVGL");
     lv_disp_drv_init(&disp_drv);
@@ -101,9 +109,9 @@ void start_lvgl_task() {
         show_passwords_screen_init();
         settings_screen_init();
 
-        register_screen_load();
-        // register_screen_init();
-        // main_menu_screen_load();
+        // register_screen_load();
+        //  register_screen_init();
+        main_menu_screen_load();
         /*settings_screen_load();
         main_menu_screen_load();
         insert_passwords_screen_load();
