@@ -99,11 +99,6 @@ i80_st7789_panel_handle_t i80_st7789_panel_init(
     esp_lcd_panel_reset(panel_handle.esp_lcd_panel_handle);
     esp_lcd_panel_init(panel_handle.esp_lcd_panel_handle);
 
-    /*
-    // esp_lcd_panel_swap_xy(panel_handle, true);
-    esp_lcd_panel_mirror(panel_handle, true, true);
-    esp_lcd_panel_set_gap(panel_handle, 35, 0); */
-
     for (uint8_t i = 0; i < (sizeof(lcd_st7789v_commands) / sizeof(lcd_cmd_t)); i++) {
         esp_lcd_panel_io_tx_param(panel_handle.io_handle, lcd_st7789v_commands[i].addr,
                                   lcd_st7789v_commands[i].param,
@@ -154,6 +149,7 @@ esp_err_t i80_st7789_panel_set_brightness(i80_st7789_panel_handle_t* panel_handl
         brightness = MAX_BRIGHTNESS_DUTY_CYCLE;
         break;
     }
+
     ESP_LOGI(TAG, "Brightness set: %" PRId8, panel_brightness);
     ledc_set_duty(LEDC_LOW_SPEED_MODE, panel_handle->back_light_channel, brightness);
     return ledc_update_duty(LEDC_LOW_SPEED_MODE, panel_handle->back_light_channel);

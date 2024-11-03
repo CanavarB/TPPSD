@@ -31,6 +31,7 @@ void lvgl_task(void* arg) {
 
     ESP_LOGI(TAG, "Starting LVGL task");
     uint32_t task_delay_ms = LVGL_TASK_MAX_DELAY_MS;
+
     while (true) {
         // Lock the mutex due to the LVGL APIs are not thread-safe
         if (lvgl_lock(-1)) {
@@ -55,21 +56,28 @@ void start_lvgl_task() {
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
 
-    lvgl_draw_buffer =
+    /* lvgl_draw_buffer =
         (uint16_t*)heap_caps_malloc(DISPLAY_BUFFER_SIZE * sizeof(uint16_t), MALLOC_CAP_DMA);
     assert(lvgl_draw_buffer);
 
     // initialize LVGL draw buffers
     lv_disp_draw_buf_init(&disp_buf, lvgl_draw_buffer, NULL, DISPLAY_BUFFER_SIZE);
+     */
+    lv_color_t* buf1 =
+        (lv_color_t*)heap_caps_malloc(AMOLED_HEIGHT * 160 * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    assert(buf1);
+    lv_color_t* buf2 =
+        (lv_color_t*)heap_caps_malloc(AMOLED_HEIGHT * 160 * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    assert(buf2);
+    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, AMOLED_HEIGHT * 160);
 
     ESP_LOGI(TAG, "Register display driver to LVGL");
     lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = AMOLED_WIDTH;
-    disp_drv.ver_res = AMOLED_HEIGHT;
+    disp_drv.hor_res = AMOLED_HEIGHT;
+    disp_drv.ver_res = AMOLED_WIDTH;
     disp_drv.flush_cb = lvgl_flush_cb;
     disp_drv.draw_buf = &disp_buf;
-    disp_drv.full_refresh = false;
-    disp_drv.direct_mode = true;
+    disp_drv.rotated = LV_DISP_ROT_90;
     lv_disp_drv_register(&disp_drv);
 
     ESP_LOGI(TAG, "Install LVGL tick timer");
@@ -95,17 +103,19 @@ void start_lvgl_task() {
     ESP_LOGI(TAG, "Display LVGL");
 
     if (lvgl_lock(-1)) {
-        /* register_screen_init();
+        register_screen_init();
         main_menu_screen_init();
         insert_passwords_screen_init();
-        show_passwords_screen_init();*/
+        show_passwords_screen_init();
         settings_screen_init();
 
-        settings_screen_load();
         // register_screen_load();
-        // main_menu_screen_load();
-        // insert_passwords_screen_load();
-        // show_passwords_screen_load();
+        //  register_screen_init();
+        main_menu_screen_load();
+        /*settings_screen_load();
+        main_menu_screen_load();
+        insert_passwords_screen_load();
+        show_passwords_screen_load(); */
         xSemaphoreGiveRecursive(lvgl_mux);
     }
 

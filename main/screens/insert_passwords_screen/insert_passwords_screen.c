@@ -1,4 +1,6 @@
 #include "insert_passwords_screen.h"
+#include "fetch_passwords_task.h"
+#include "main_menu_screen.h"
 
 static const char* TAG = "INSERT_PASSWORDS_SCREEN";
 
@@ -11,14 +13,18 @@ static void cancel_btn_event_cb(lv_event_t* e);
 
 void insert_passwords_screen_init() {
     insert_passwords_scr = lv_obj_create(NULL);
+    lv_obj_set_style_bg_color(insert_passwords_scr, lv_color_make(91, 94, 99), LV_STATE_DEFAULT);
     insert_passwords_input_group = lv_group_create();
 
     lv_obj_t* usb_symbol = lv_img_create(insert_passwords_scr);
     lv_img_set_src(usb_symbol, &usb);
+    lv_obj_remove_style_all(usb_symbol);
+    lv_obj_set_size(usb_symbol, 150, 150);
     lv_obj_align(usb_symbol, LV_ALIGN_TOP_MID, 0, 50);
 
     lv_obj_t* cancel_btn = lv_btn_create(insert_passwords_scr);
     lv_obj_align(cancel_btn, LV_ALIGN_BOTTOM_MID, 0, -20);
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_make(241, 73, 2), LV_STATE_FOCUSED);
 
     lv_obj_t* cancel_label = lv_label_create(cancel_btn);
     lv_label_set_text(cancel_label, "Cancel");
@@ -32,10 +38,12 @@ void insert_passwords_screen_load() {
 
     lv_indev_set_group(rotary_indev, insert_passwords_input_group);
     lv_scr_load(insert_passwords_scr);
+    usb_msc_start(&usb_msc);
 }
 
 static void cancel_btn_event_cb(lv_event_t* e) {
     ESP_LOGI(TAG, "CANCEL PRESSED");
-    //  start_fetch_passwords_task();
-    // main_menu_screen_load();
+    usb_msc_stop(&usb_msc);
+    start_fetch_passwords_task();
+    main_menu_screen_load();
 }

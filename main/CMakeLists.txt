@@ -29,8 +29,10 @@ set(requires
     salt_table
     i80_st7789_panel
     usb_msc
+    usb_keyboard
     TPPSD_nvs
     TPPSD_spiffs
+    mbedtls
     )
 
 idf_component_register(
